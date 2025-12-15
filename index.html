@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <title>Một điều tớ muốn nói</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <style>
+    body {
+      background: #f6e9f0;
+      font-family: "Segoe UI", sans-serif;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+    }
+
+    .box {
+      background: white;
+      padding: 26px 28px;
+      border-radius: 18px;
+      width: 90%;
+      max-width: 420px;
+      box-shadow: 0 12px 30px rgba(0,0,0,0.12);
+      text-align: center;
+    }
+
+    .text {
+      font-size: 16px;
+      color: #333;
+      margin-bottom: 22px;
+      min-height: 120px;
+      line-height: 1.6;
+    }
+
+    button {
+      padding: 10px 18px;
+      border: none;
+      border-radius: 999px;
+      background: #e48bb5;
+      color: white;
+      cursor: pointer;
+      font-size: 14px;
+      margin: 6px;
+    }
+
+    button.secondary {
+      background: #bbb;
+      color: #333;
+    }
+  </style>
+</head>
+<body>
+
+<div class="box">
+  <div id="text" class="text"></div>
+  <div id="actions"></div>
+</div>
+
+<script>
+  const FORM_ENDPOINT = "https://formspree.io/f/mzznqrbz";
+
+  const messages = [
+    "Hellu Phương Anh,",
+    "Khi Phương Anh đọc được những dòng này thì chắc tớ đã về nhà rồi.",
+    "Tớ nghĩ khá lâu mới quyết định nói ra, nên mong Phương Anh đừng hiểu theo hướng nặng nề quá nhé.",
+    "Tớ thật sự trân trọng những cuộc trò chuyện của tụi mình, và cũng muốn nói thật là tớ có cảm tình với Phương Anh.",
+    "Nhưng có lẽ vì những trải nghiệm trước đây, tớ hơi chậm trong việc tin và mở lòng.",
+    "Đôi lúc tớ thấy mình vẫn chưa đủ an toàn và bình yên.",
+    "Có lẽ hiện tại tớ cần chậm lại để nhìn rõ cảm xúc của mình hơn.",
+    "Và nếu tụi mình còn tiếp tục trò chuyện, tớ cũng mong Phương Anh có thể cho tớ cảm giác an toàn, theo cách tự nhiên nhất của Phương Anh.",
+    "Nếu Phương Anh vẫn thấy thoải mái trò chuyện, chậm lại cùng tớ, thì tớ rất trân trọng điều đó.",
+    "Còn nếu Phương Anh cảm thấy không phù hợp, tớ cũng hoàn toàn hiểu và tôn trọng.",
+    "Dù thế nào thì tớ vẫn cảm ơn Phương Anh rất nhiều vì sự dễ thương và những năng lượng tích cực Phương Anh mang lại.",
+    "Mong Phương Anh mỗi ngày đều vui vẻ, nhẹ lòng và nhớ cười thật nhiều nhé.",
+    "Cậu cười xinh lắm.",
+    "Giờ thì… lựa chọn nằm ở đây."
+  ];
+
+  let index = 0;
+  const textEl = document.getElementById("text");
+  const actionsEl = document.getElementById("actions");
+
+  function showNext() {
+    textEl.innerText = messages[index];
+    actionsEl.innerHTML = "";
+
+    if (index < messages.length - 1) {
+      const btn = document.createElement("button");
+      btn.innerText = "Đọc tiếp";
+      btn.onclick = () => {
+        index++;
+        showNext();
+      };
+      actionsEl.appendChild(btn);
+    } else {
+      showFinalChoices();
+    }
+  }
+
+  function showFinalChoices() {
+    const continueBtn = document.createElement("button");
+    continueBtn.innerText = "Tiếp tục";
+    continueBtn.onclick = () => sendResult("Tiếp tục");
+
+    const stopBtn = document.createElement("button");
+    stopBtn.innerText = "Từ bỏ";
+    stopBtn.className = "secondary";
+    stopBtn.onclick = () => sendResult("Từ bỏ");
+
+    actionsEl.appendChild(continueBtn);
+    actionsEl.appendChild(stopBtn);
+  }
+
+  function sendResult(choice) {
+    fetch(FORM_ENDPOINT, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "Accept": "application/json"
+      },
+      body: JSON.stringify({
+        choice: choice
+      })
+    }).then(() => {
+      textEl.innerText = "Cảm ơn Phương Anh đã đọc đến đây 🤍";
+      actionsEl.innerHTML = "";
+    }).catch(() => {
+      textEl.innerText = "Có chút trục trặc nhỏ, nhưng cảm ơn Phương Anh rất nhiều 🤍";
+      actionsEl.innerHTML = "";
+    });
+  }
+
+  showNext();
+</script>
+
+</body>
+</html>
